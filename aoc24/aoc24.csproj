@@ -7,4 +7,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="input\" />
+    <Folder Include="Options\" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Using Include="aoc24.Challenges"/>
+		<Using Include="aoc24.Data"/>
+		<Using Include="aoc24.Exceptions"/>
+		<Using Include="aoc24.Extensions"/>
+		<Using Include="aoc24.IO"/>
+		<Using Include="aoc24.Options"/>
+		<Using Include="System.Diagnostics.CodeAnalysis"/>
+	</ItemGroup>
+
 </Project>
