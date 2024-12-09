@@ -4,6 +4,8 @@ internal class Program
 {
     static async Task<int> Main(string[] args)
     {
+        var cancellationSource = new CancellationTokenSource();
+
         if (!BaseOptions.TryParse(args, out var options, out var reason))
         {
             Console.WriteLine($"ERROR: {reason}");
@@ -14,7 +16,7 @@ internal class Program
 
         try
         {
-            var result = await runtime.Run();
+            var result = await runtime.Run(cancellationSource.Token);
             if (result.IsSuccess(out var answer, out var error))
             {
                 Console.WriteLine(answer);

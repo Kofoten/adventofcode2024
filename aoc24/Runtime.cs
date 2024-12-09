@@ -5,12 +5,10 @@ public class Runtime(IOptions options)
 {
     public readonly IOptions options = options;
 
-    public async Task<Result> Run()
+    public async Task<Result> Run(CancellationToken cancellation)
     {
-        if (!options.InputFile.Exists)
-        {
-            return Result.Error(2, $"Could not find input file: {options.InputFile.FullName}");
-        }
+        using var inputStream = await InputProvider.GetInput(options.Challenge, options.UseExampleInput, options.SessionCookie, cancellation);
+        using var inputReader = new InputReader(inputStream);
 
         IChallenge challenge;
         try
@@ -22,15 +20,12 @@ public class Runtime(IOptions options)
             return Result.Error(3, e.Message);
         }
 
-
-        using var reader = FileInputReader.Create(options.InputFile);
         var stopwatch = new Stopwatch();
-
         string answer;
         try
         {
             stopwatch.Start();
-            answer = await challenge.PerformChallenge(reader, options.Part);
+            answer = await challenge.PerformChallenge(inputReader, options.Part);
             stopwatch.Stop();
         }
         catch (PartDoesNotExistException e)

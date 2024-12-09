@@ -1,6 +1,6 @@
 ﻿namespace aoc24.Options;
 
-public record BaseOptions(int Challenge, int Part, FileInfo InputFile) : IOptions
+public record BaseOptions(int Challenge, int Part, bool UseExampleInput, string? SessionCookie) : IOptions
 {
     public static bool TryParse(string[] args, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason)
     {
@@ -25,54 +25,54 @@ public record BaseOptions(int Challenge, int Part, FileInfo InputFile) : IOption
             return false;
         }
 
-        var readCount = 2;
-        string? fileName = null;
-        if (args.Length > 2 && !args[2].StartsWith('-'))
+        bool useExampleInput = false;
+        string? sessionCookie = null;
+
+        var remainingArgs = new List<string>();
+        string? previous = null;
+        for (int i = 2; i < args.Length; i++)
         {
-            fileName = args[2];
-            readCount = 3;
+            if (args[i].StartsWith('-'))
+            {
+                switch (args[i])
+                {
+                    case "--use-example":
+                        useExampleInput = true;
+                        break;
+                    case "--session-cookie":
+                        previous = args[i];
+                        break;
+                    default:
+                        remainingArgs.Add(args[i]);
+                        break;
+                }
+            }
+            else
+            {
+                switch (previous)
+                {
+                    case "--session-cookie":
+                        sessionCookie = args[i];
+                        break;
+                    default:
+                        remainingArgs.Add(args[i]);
+                        break;
+                }
+            }
         }
 
-        if (!TryGetInputFile(challenge, fileName, out var inputFile))
-        {
-            options = null;
-            reason = "Input file (optional positional argument 2) must refer to an existing file or the text test to indicate usage of the test file.";
-            return false;
-        }
-
-        return TryParseIfSpecific(challenge, part, inputFile, args[readCount..], out options, out reason);
+        return TryParseIfSpecific(challenge, part, useExampleInput, sessionCookie, remainingArgs, out options, out reason);
     }
 
-    public static bool TryParseIfSpecific(int challenge, int part, FileInfo inputFile, string[] challengeSpecificOptions, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason) => challenge switch
+    public static bool TryParseIfSpecific(int challenge, int part, bool useExampleInput, string? sessionCookie, IList<string> challengeSpecificOptions, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason) => challenge switch
     {
-        _ => CreateBaseOptions(challenge, part, inputFile, out options, out reason),
+        _ => CreateBaseOptions(challenge, part, useExampleInput, sessionCookie, out options, out reason),
     };
 
-    private static bool CreateBaseOptions(int challenge, int part, FileInfo inputFile, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason)
+    private static bool CreateBaseOptions(int challenge, int part, bool useExampleInput, string? sessionCookie, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason)
     {
-        options = new BaseOptions(challenge, part, inputFile);
+        options = new BaseOptions(challenge, part, useExampleInput, sessionCookie);
         reason = null;
         return true;
-    }
-
-    private static bool TryGetInputFile(int challangeNumber, string? value, [NotNullWhen(true)] out FileInfo? file)
-    {
-        var inputProvider = InputFileProvider.Create();
-        if (value is null)
-        {
-            return inputProvider.TryGetInputFile(challangeNumber, false, out file);
-        }
-        else if (value == "test")
-        {
-            return inputProvider.TryGetInputFile(challangeNumber, true, out file);
-        }
-        else if (Path.Exists(value))
-        {
-            file = new FileInfo(value);
-            return true;
-        }
-
-        file = null;
-        return false;
     }
 }

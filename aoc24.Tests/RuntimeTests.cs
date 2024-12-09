@@ -1,5 +1,4 @@
-﻿using aoc24.IO;
-using aoc24.Options;
+﻿using aoc24.Options;
 
 namespace aoc24.Tests;
 
@@ -133,12 +132,10 @@ public class RuntimeTests
     [DataRow(25, 2, false, "", DisplayName = "Day 25 Part 2 Actual")]
     public async Task TestRun(int challange, int part, bool useTestFile, string expected, params string[] challengeSpecificOptions)
     {
-        var inputProvider = InputFileProvider.Create();
-        var file = inputProvider.GetInputFile(challange, useTestFile);
-        var options = CretaeOptions(challange, part, file, challengeSpecificOptions);
+        var options = CreateOptions(challange, part, useTestFile, challengeSpecificOptions);
         var runtime = new Runtime(options);
 
-        var result = await runtime.Run();
+        var result = await runtime.Run(default);
 
         Assert.IsNotNull(result);
         Assert.IsTrue(result.IsSuccess(out var answer, out var error));
@@ -147,9 +144,9 @@ public class RuntimeTests
         Assert.AreEqual(expected, answer);
     }
 
-    private static IOptions CretaeOptions(int challange, int part, FileInfo inputFile, string[] challengeSpecificOptions)
+    private static IOptions CreateOptions(int challange, int part, bool useTestFile, IList<string> challengeSpecificOptions)
     {
-        if (!BaseOptions.TryParseIfSpecific(challange, part, inputFile, challengeSpecificOptions, out var options, out var _))
+        if (!BaseOptions.TryParseIfSpecific(challange, part, useTestFile, null, challengeSpecificOptions, out var options, out var _))
         {
             throw new InternalTestFailureException($"Could not initialize options to test challenge {challange}");
         }

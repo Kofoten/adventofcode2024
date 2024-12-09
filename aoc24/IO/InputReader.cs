@@ -1,13 +1,8 @@
 ﻿namespace aoc24.IO;
 
-public class FileInputReader : IInputReader
+public class InputReader(Stream stream) : IInputReader
 {
-    private readonly StreamReader reader;
-
-    private FileInputReader(StreamReader reader)
-    {
-        this.reader = reader;
-    }
+    private readonly StreamReader reader = new(stream);
 
     public bool CanRead => !reader.EndOfStream;
 
@@ -28,12 +23,5 @@ public class FileInputReader : IInputReader
     {
         GC.SuppressFinalize(this);
         reader.Dispose();
-    }
-
-    public static FileInputReader Create(FileInfo file)
-    {
-        var stream = file.OpenRead();
-        var reader = new StreamReader(stream);
-        return new FileInputReader(reader);
     }
 }

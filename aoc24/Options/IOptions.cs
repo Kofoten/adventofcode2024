@@ -4,5 +4,6 @@ public interface IOptions
 {
     int Challenge { get; }
     int Part { get; }
-    FileInfo InputFile { get; }
+    bool UseExampleInput { get; }
+    string? SessionCookie { get; }
 }
