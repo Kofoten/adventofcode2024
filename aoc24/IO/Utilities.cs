@@ -2,7 +2,7 @@
 
 public static class Utilities
 {
-    public static string GetAocCachePath(int year)
+    public static string GetAocCachePath()
     {
         var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var aocCachePath = Path.Combine(homeDir, ".aoc");
@@ -11,12 +11,23 @@ public static class Utilities
             Directory.CreateDirectory(aocCachePath);
         }
 
-        var aocYearCachePath = Path.Combine(aocCachePath, year.ToString());
-        if (!Directory.Exists(aocYearCachePath))
+        return aocCachePath;
+    }
+
+    public static string GetAocChallengeCachePath(int year)
+    {
+        var aocChallengeCachePath = Path.Combine(GetAocCachePath(), "cache");
+        if (!Directory.Exists(aocChallengeCachePath))
         {
-            Directory.CreateDirectory(aocYearCachePath);
+            Directory.CreateDirectory(aocChallengeCachePath);
         }
 
-        return aocYearCachePath;
+        var aocYearChallengeCachePath = Path.Combine(aocChallengeCachePath, year.ToString());
+        if (!Directory.Exists(aocYearChallengeCachePath))
+        {
+            Directory.CreateDirectory(aocYearChallengeCachePath);
+        }
+
+        return aocYearChallengeCachePath;
     }
 }

@@ -26,7 +26,7 @@ public class AocClient(int year)
 
     private async Task Authenticate(HttpRequestMessage request, string? sessionCookie, CancellationToken cancellation)
     {
-        var aocPath = Utilities.GetAocCachePath(year);
+        var aocPath = Utilities.GetAocCachePath();
         var sessionCachePath = Path.Combine(aocPath, "session");
 
         if (sessionCookie is not null)

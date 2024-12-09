@@ -6,10 +6,10 @@ namespace aoc24.Tests;
 public class RuntimeTests
 {
     [TestMethod]
-    [DataRow(1, 1, true, "", DisplayName = "Day 01 Part 1 Test")]
-    [DataRow(1, 1, false, "", DisplayName = "Day 01 Part 1 Actual")]
-    [DataRow(1, 2, true, "", DisplayName = "Day 01 Part 2 Test")]
-    [DataRow(1, 2, false, "", DisplayName = "Day 01 Part 2 Actual")]
+    [DataRow(1, 1, true, "11", DisplayName = "Day 01 Part 1 Test")]
+    [DataRow(1, 1, false, "1590491", DisplayName = "Day 01 Part 1 Actual")]
+    [DataRow(1, 2, true, "31", DisplayName = "Day 01 Part 2 Test")]
+    [DataRow(1, 2, false, "22588371", DisplayName = "Day 01 Part 2 Actual")]
 
     [DataRow(2, 1, true, "", DisplayName = "Day 02 Part 1 Test")]
     [DataRow(2, 1, false, "", DisplayName = "Day 02 Part 1 Actual")]

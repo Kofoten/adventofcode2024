@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="example-input\" />
     <Folder Include="Options\Specific\" />
   </ItemGroup>
 
@@ -20,6 +19,12 @@
 		<Using Include="aoc24.IO" />
 		<Using Include="aoc24.Options" />
 		<Using Include="System.Diagnostics.CodeAnalysis" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="example-input\day01.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

@@ -37,8 +37,8 @@ public class InputProvider()
         }
         else
         {
-            var cacheDirectory = Utilities.GetAocCachePath(Year);
-            return Path.Combine(cacheDirectory, "input", fileName);
+            var cacheDirectory = Utilities.GetAocChallengeCachePath(Year);
+            return Path.Combine(cacheDirectory, fileName);
         }
     }
 }
