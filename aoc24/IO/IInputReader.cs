@@ -3,9 +3,10 @@
 public interface IInputReader : IDisposable
 {
     bool CanRead { get; }
-    ValueTask<string> ReadLineAsync();
-    IAsyncEnumerable<string> ReadAllLinesAsync();
+    ValueTask<string> ReadLineAsync(CancellationToken cancellation);
+    IAsyncEnumerable<string> ReadAllLinesAsync(CancellationToken cancellation);
+    ValueTask<string> ReadToEndAsync(CancellationToken cancellation);
 
-    ValueTask<T> ReadLineAsync<T>(Func<string, T> converter);
-    IAsyncEnumerable<T> ReadAllLinesAsync<T>(Func<string, T> converter);
+    ValueTask<T> ReadLineAsync<T>(Func<string, T> converter, CancellationToken cancellation);
+    IAsyncEnumerable<T> ReadAllLinesAsync<T>(Func<string, T> converter, CancellationToken cancellation);
 }

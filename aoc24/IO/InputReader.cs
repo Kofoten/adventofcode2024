@@ -1,4 +1,6 @@
-﻿namespace aoc24.IO;
+﻿using System.Runtime.CompilerServices;
+
+namespace aoc24.IO;
 
 public class InputReader(Stream stream) : IInputReader
 {
@@ -6,16 +8,35 @@ public class InputReader(Stream stream) : IInputReader
 
     public bool CanRead => !reader.EndOfStream;
 
-    public async ValueTask<string> ReadLineAsync()
+    public async ValueTask<string> ReadLineAsync(CancellationToken cancellation)
     {
-        return await reader.ReadLineAsync() ?? throw new InvalidDataException("Input is invalid");
+        return await reader.ReadLineAsync(cancellation) ?? throw new InvalidDataException("Input is invalid");
     }
 
-    public async IAsyncEnumerable<string> ReadAllLinesAsync()
+    public async IAsyncEnumerable<string> ReadAllLinesAsync([EnumeratorCancellation] CancellationToken cancellation)
     {
         while (!reader.EndOfStream)
         {
-            yield return await ReadLineAsync();
+            yield return await ReadLineAsync(cancellation);
+        }
+    }
+
+    public async ValueTask<string> ReadToEndAsync(CancellationToken cancellation)
+    {
+        return await reader.ReadToEndAsync(cancellation);
+    }
+
+    public async ValueTask<T> ReadLineAsync<T>(Func<string, T> converter, CancellationToken cancellation)
+    {
+        var line = await ReadLineAsync(cancellation);
+        return converter.Invoke(line);
+    }
+
+    public async IAsyncEnumerable<T> ReadAllLinesAsync<T>(Func<string, T> converter, [EnumeratorCancellation] CancellationToken cancellation)
+    {
+        while (!reader.EndOfStream)
+        {
+            yield return await ReadLineAsync(converter, cancellation);
         }
     }
 
@@ -23,19 +44,5 @@ public class InputReader(Stream stream) : IInputReader
     {
         GC.SuppressFinalize(this);
         reader.Dispose();
-    }
-
-    public async ValueTask<T> ReadLineAsync<T>(Func<string, T> converter)
-    {
-        var line = await ReadLineAsync();
-        return converter.Invoke(line);
-    }
-
-    public async IAsyncEnumerable<T> ReadAllLinesAsync<T>(Func<string, T> converter)
-    {
-        while (!reader.EndOfStream)
-        {
-            yield return await ReadLineAsync(converter);
-        }
     }
 }

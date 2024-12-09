@@ -25,7 +25,7 @@ public class Runtime(IOptions options)
         try
         {
             stopwatch.Start();
-            answer = await challenge.PerformChallenge(inputReader, options.Part);
+            answer = await challenge.PerformChallenge(inputReader, options.Part, cancellation);
             stopwatch.Stop();
         }
         catch (PartDoesNotExistException e)

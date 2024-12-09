@@ -2,12 +2,12 @@
 
 public class Challenge01 : IChallenge
 {
-    public async Task<string> Part1(IInputReader reader)
+    public async Task<string> Part1(IInputReader reader, CancellationToken cancellation)
     {
         var left = new List<int>();
         var right = new List<int>();
 
-        await foreach (var item in reader.ReadAllLinesAsync())
+        await foreach (var item in reader.ReadAllLinesAsync(cancellation))
         {
             var parts = item.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             var l = int.Parse(parts[0]);
@@ -43,12 +43,12 @@ public class Challenge01 : IChallenge
         return answer.ToString();
     }
 
-    public async Task<string> Part2(IInputReader reader)
+    public async Task<string> Part2(IInputReader reader, CancellationToken cancellation)
     {
         var left = new List<int>();
         var right = new List<int>();
 
-        await foreach (var item in reader.ReadAllLinesAsync())
+        await foreach (var item in reader.ReadAllLinesAsync(cancellation))
         {
             var parts = item.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             left.Add(int.Parse(parts[0]));
