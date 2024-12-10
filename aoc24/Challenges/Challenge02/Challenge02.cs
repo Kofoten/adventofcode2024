@@ -7,34 +7,8 @@ public class Challenge02 : IChallenge
         var answer = 0;
         await foreach (var item in reader.ReadAllLinesAsync(cancellation))
         {
-            var parts = item.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            bool safe = true;
-            long? decreasing = null;
-            int previous = int.Parse(parts[0]);
-            for (int i = 1; i < parts.Length; i++)
-            {
-                var current = int.Parse(parts[i]);
-                var diff = current - previous;
-
-                var absDiff = Math.Abs(diff);
-                if (absDiff < 1 || absDiff > 3)
-                {
-                    safe = false;
-                    break;
-                }
-
-                var currentlyDecreasing = diff & 0x80000000;
-                if (decreasing is not null && decreasing != currentlyDecreasing)
-                {
-                    safe = false;
-                    break;
-                }
-
-                decreasing = currentlyDecreasing;
-                previous = current;
-            }
-
-            if (safe)
+            var levels = item.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(int.Parse).ToList();
+            if (IsSafe(levels))
             {
                 answer++;
             }
@@ -48,42 +22,55 @@ public class Challenge02 : IChallenge
         var answer = 0;
         await foreach (var item in reader.ReadAllLinesAsync(cancellation))
         {
-            //if (IsReportSafe(item))
-            //{
-            //    answer++;
-            //}
+            var levels = item.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(int.Parse).ToList();
+            var safe = false;
+            for (int i = 0; i < levels.Count; i++)
+            {
+                var clone = new List<int>(levels);
+                clone.RemoveAt(i);
+                if (IsSafe(clone))
+                {
+                    safe = true;
+                    break;
+                }
+            }
+
+            if (safe)
+            {
+                answer++;
+            }
         }
 
         return answer.ToString();
     }
 
-    //private static bool IsReportSafe(string report)
-    //{
-    //    var parts = report.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(int.Parse).ToList();
+    private static bool IsSafe(IList<int> levels)
+    {
+        if (levels.Count < 2)
+        {
+            return true;
+        }
 
-    //    var ignored = new HashSet<int>();
-        
-    //    for (int i = 1; i < parts.Count; i++)
-    //    {
-    //        var current = int.Parse(parts[i]);
-    //        var diff = current - previous;
+        long decreasing = (levels[1] - levels[0]) & 0x80000000;
+        int previous = levels[0];
+        for (int i = 1; i < levels.Count; i++)
+        {
+            var diff = levels[i] - previous;
+            var absDiff = Math.Abs(diff);
+            if (absDiff < 1 || absDiff > 3)
+            {
+                return false;
+            }
 
-    //        var absDiff = Math.Abs(diff);
-    //        if (absDiff < 1 || absDiff > 3)
-    //        {
-    //            violations.Add(i);
-    //        }
+            var currentlyDecreasing = diff & 0x80000000;
+            if (decreasing != currentlyDecreasing)
+            {
+                return false;
+            }
 
-    //        if ((diff & 0x80000000) == 0)
-    //        {
-    //            increases.Add(i);
-    //        }
-    //        else
-    //        {
-    //            decreases.Add(i);
-    //        }
+            previous = levels[i];
+        }
 
-    //        previous = current;
-    //    }
-    //}
+        return true;
+    }
 }
