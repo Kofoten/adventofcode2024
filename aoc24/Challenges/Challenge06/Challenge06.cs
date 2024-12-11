@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text;
+﻿using System.Text;
 
 namespace aoc24.Challenges.Challenge06;
 
@@ -39,11 +38,12 @@ public class Challenge06 : IChallenge
         var direction = (-1, 0);
         (var size, var position, var obstacles) = await ReadInput(reader, cancellation);
         var history = new HashSet<(int, int, int, int)>();
-        var endAtEdge = new HashSet<(int, int, int, int)>();
+        var path = new HashSet<(int, int)>();
 
         var answer = 0;
         while (true)
         {
+            path.Add(position);
             var next = MoveForward(position, direction);
             if (IsOutside(next, size))
             {
@@ -57,9 +57,13 @@ public class Challenge06 : IChallenge
             }
             else
             {
-                if (IsLoop(position, TurnRight(direction), size, obstacles, history, endAtEdge))
+                if (!path.Contains(next))
                 {
-                    answer++;
+                    var checkDirection = TurnRight(direction);
+                    if (IsLoop(position, checkDirection, size, next, obstacles, history, path))
+                    {
+                        answer++;
+                    }
                 }
 
                 position = next;
@@ -68,33 +72,38 @@ public class Challenge06 : IChallenge
 
         return answer.ToString();
     }
-    
-    private static bool IsLoop((int, int) position, (int, int) direction, (int, int) size, HashSet<(int, int)> obstacles, HashSet<(int, int, int, int)> history, HashSet<(int, int, int, int)> endAtEdge)
+
+    private static bool IsLoop((int, int) position, (int, int) direction, (int, int) size, (int, int) addedObstacle, HashSet<(int, int)> obstacles, HashSet<(int, int, int, int)> history, HashSet<(int, int)> previousPath)
     {
+        var visited = new HashSet<(int, int)>();
         var start = (position.Item1, position.Item2, direction.Item1, direction.Item2);
         var innerHistory = new HashSet<(int, int, int, int)>();
-        while (true)
+        bool? result = null;
+        while (result is null)
         {
+            visited.Add(position);
             var nextDirection = TurnRight(direction);
             var current = (position.Item1, position.Item2, nextDirection.Item1, nextDirection.Item2);
             if (start == current || history.Contains(current))
             {
-                return true;
+                result = true;
+                continue;
             }
-            
+
             if (innerHistory.Contains(current))
             {
-                return false;
+                result = false;
+                continue;
             }
 
             var next = MoveForward(position, direction);
-            if (IsOutside(next, size)/* || endAtEdge.Contains(current)*/)
+            if (IsOutside(next, size))
             {
-                endAtEdge.UnionWith(innerHistory);
-                return false;
+                result = false;
+                continue;
             }
 
-            if (obstacles.Contains(next))
+            if (next == addedObstacle || obstacles.Contains(next))
             {
                 direction = nextDirection;
                 innerHistory.Add(current);
@@ -103,8 +112,10 @@ public class Challenge06 : IChallenge
             {
                 position = next;
             }
-
         }
+
+        Print(size, (start.Item1, start.Item2), position, addedObstacle, obstacles, visited, previousPath);
+        return result.Value;
     }
 
     private static (int, int) MoveForward((int, int) position, (int, int) direction) => (position.Item1 + direction.Item1, position.Item2 + direction.Item2);
@@ -158,29 +169,38 @@ public class Challenge06 : IChallenge
         return ((linesRead, lineLength), start, obstacles);
     }
 
-    private static void Print((int, int) size, (int, int) position, HashSet<(int, int)> obstacles, HashSet<(int, int, int, int)> history, HashSet<(int, int, int, int)> inner)
+    private static void Print((int, int) size, (int, int) start, (int, int) position, (int, int) addedObstacle, HashSet<(int, int)> obstacles, HashSet<(int, int)> visited, HashSet<(int, int)> path)
     {
         var sb = new StringBuilder();
-        
+
         for (int i = 0; i < size.Item1; i++)
         {
             for (int j = 0; j < size.Item2; j++)
             {
-                if ((i, j) == position)
+                var current = (i, j);
+                if (current == start)
+                {
+                    sb.Append('S');
+                }
+                else if (current == position)
                 {
                     sb.Append('X');
                 }
-                else if (obstacles.Contains((i, j)))
+                else if (current == addedObstacle)
+                {
+                    sb.Append('O');
+                }
+                else if (obstacles.Contains(current))
                 {
                     sb.Append('#');
                 }
-                else if (history.Any(x => x.Item1 == i && x.Item2 == j))
-                {
-                    sb.Append('+');
-                }
-                else if (inner.Any(x => x.Item1 == i && x.Item2 == j))
+                else if (path.Contains(current))
                 {
                     sb.Append('¤');
+                }
+                else if (visited.Contains(current))
+                {
+                    sb.Append('+');
                 }
                 else
                 {
