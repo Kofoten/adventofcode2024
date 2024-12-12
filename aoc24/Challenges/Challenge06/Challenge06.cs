@@ -2,7 +2,7 @@
 
 namespace aoc24.Challenges.Challenge06;
 
-public class Challenge06 : IChallenge
+public class Challenge06(IOptions options) : IChallenge
 {
     public async Task<string> Part1(IInputReader reader, CancellationToken cancellation)
     {
@@ -60,7 +60,7 @@ public class Challenge06 : IChallenge
                 if (!path.Contains(next))
                 {
                     var checkDirection = TurnRight(direction);
-                    if (IsLoop(position, checkDirection, size, next, obstacles, history, path))
+                    if (await IsLoop(position, checkDirection, size, next, obstacles, history, path))
                     {
                         answer++;
                     }
@@ -73,7 +73,7 @@ public class Challenge06 : IChallenge
         return answer.ToString();
     }
 
-    private static bool IsLoop((int, int) position, (int, int) direction, (int, int) size, (int, int) addedObstacle, HashSet<(int, int)> obstacles, HashSet<(int, int, int, int)> history, HashSet<(int, int)> previousPath)
+    private async Task<bool> IsLoop((int, int) position, (int, int) direction, (int, int) size, (int, int) addedObstacle, HashSet<(int, int)> obstacles, HashSet<(int, int, int, int)> history, HashSet<(int, int)> previousPath)
     {
         var visited = new HashSet<(int, int)>();
         var start = (position.Item1, position.Item2, direction.Item1, direction.Item2);
@@ -92,7 +92,7 @@ public class Challenge06 : IChallenge
 
             if (innerHistory.Contains(current))
             {
-                result = false;
+                result = true;
                 continue;
             }
 
@@ -114,7 +114,13 @@ public class Challenge06 : IChallenge
             }
         }
 
-        Print(size, (start.Item1, start.Item2), position, addedObstacle, obstacles, visited, previousPath);
+        if (options.Verbose)
+        {
+            await Task.Delay(5);
+            Print(size, (start.Item1, start.Item2), position, addedObstacle, obstacles, visited, previousPath);
+            Console.WriteLine(result.Value);
+        }
+
         return result.Value;
     }
 

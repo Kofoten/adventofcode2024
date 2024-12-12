@@ -34,7 +34,7 @@ public class RuntimeTests
     [DataRow(6, 1, true, "41", DisplayName = "Day 06 Part 1 Test")]
     [DataRow(6, 1, false, "4722", DisplayName = "Day 06 Part 1 Actual")]
     [DataRow(6, 2, true, "6", DisplayName = "Day 06 Part 2 Test")]
-    [DataRow(6, 2, false, "", DisplayName = "Day 06 Part 2 Actual")]
+    [DataRow(6, 2, false, "1602", DisplayName = "Day 06 Part 2 Actual")]
 
     [DataRow(7, 1, true, "", DisplayName = "Day 07 Part 1 Test")]
     [DataRow(7, 1, false, "", DisplayName = "Day 07 Part 1 Actual")]
@@ -146,7 +146,7 @@ public class RuntimeTests
 
     private static IOptions CreateOptions(int challange, int part, bool useTestFile, IList<string> challengeSpecificOptions)
     {
-        if (!BaseOptions.TryParseIfSpecific(challange, part, useTestFile, null, challengeSpecificOptions, out var options, out var _))
+        if (!BaseOptions.TryParseIfSpecific(challange, part, useTestFile, false, null, challengeSpecificOptions, out var options, out var _))
         {
             throw new InternalTestFailureException($"Could not initialize options to test challenge {challange}");
         }

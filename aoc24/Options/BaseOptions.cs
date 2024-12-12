@@ -1,6 +1,6 @@
 ﻿namespace aoc24.Options;
 
-public record BaseOptions(int Challenge, int Part, bool UseExampleInput, string? SessionCookie) : IOptions
+public record BaseOptions(int Challenge, int Part, bool UseExampleInput, bool Verbose, string? SessionCookie) : IOptions
 {
     public static bool TryParse(string[] args, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason)
     {
@@ -26,6 +26,7 @@ public record BaseOptions(int Challenge, int Part, bool UseExampleInput, string?
         }
 
         bool useExampleInput = false;
+        bool verbose = false;
         string? sessionCookie = null;
 
         var remainingArgs = new List<string>();
@@ -38,6 +39,9 @@ public record BaseOptions(int Challenge, int Part, bool UseExampleInput, string?
                 {
                     case "--use-example":
                         useExampleInput = true;
+                        break;
+                    case "--verbose":
+                        verbose = true;
                         break;
                     case "--session-cookie":
                         previous = args[i];
@@ -61,17 +65,17 @@ public record BaseOptions(int Challenge, int Part, bool UseExampleInput, string?
             }
         }
 
-        return TryParseIfSpecific(challenge, part, useExampleInput, sessionCookie, remainingArgs, out options, out reason);
+        return TryParseIfSpecific(challenge, part, useExampleInput, verbose, sessionCookie, remainingArgs, out options, out reason);
     }
 
-    public static bool TryParseIfSpecific(int challenge, int part, bool useExampleInput, string? sessionCookie, IList<string> challengeSpecificOptions, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason) => challenge switch
+    public static bool TryParseIfSpecific(int challenge, int part, bool useExampleInput, bool verbose, string? sessionCookie, IList<string> challengeSpecificOptions, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason) => challenge switch
     {
-        _ => CreateBaseOptions(challenge, part, useExampleInput, sessionCookie, out options, out reason),
+        _ => CreateBaseOptions(challenge, part, useExampleInput, verbose, sessionCookie, out options, out reason),
     };
 
-    private static bool CreateBaseOptions(int challenge, int part, bool useExampleInput, string? sessionCookie, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason)
+    private static bool CreateBaseOptions(int challenge, int part, bool useExampleInput, bool verbose, string? sessionCookie, [NotNullWhen(true)] out IOptions? options, [NotNullWhen(false)] out string? reason)
     {
-        options = new BaseOptions(challenge, part, useExampleInput, sessionCookie);
+        options = new BaseOptions(challenge, part, useExampleInput, verbose, sessionCookie);
         reason = null;
         return true;
     }
