@@ -36,10 +36,10 @@ public class RuntimeTests
     [DataRow(6, 2, true, "6", DisplayName = "Day 06 Part 2 Test")]
     [DataRow(6, 2, false, "1602", DisplayName = "Day 06 Part 2 Actual")]
 
-    [DataRow(7, 1, true, "", DisplayName = "Day 07 Part 1 Test")]
-    [DataRow(7, 1, false, "", DisplayName = "Day 07 Part 1 Actual")]
-    [DataRow(7, 2, true, "", DisplayName = "Day 07 Part 2 Test")]
-    [DataRow(7, 2, false, "", DisplayName = "Day 07 Part 2 Actual")]
+    [DataRow(7, 1, true, "3749", DisplayName = "Day 07 Part 1 Test")]
+    [DataRow(7, 1, false, "1430271835320", DisplayName = "Day 07 Part 1 Actual")]
+    [DataRow(7, 2, true, "11387", DisplayName = "Day 07 Part 2 Test")]
+    [DataRow(7, 2, false, "456565678667482", DisplayName = "Day 07 Part 2 Actual")]
 
     [DataRow(8, 1, true, "", DisplayName = "Day 08 Part 1 Test")]
     [DataRow(8, 1, false, "", DisplayName = "Day 08 Part 1 Actual")]
