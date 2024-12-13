@@ -12,7 +12,7 @@ public static class ChallengeProvider
         BaseOptions o when o.Challenge == 06 => new Challenge06.Challenge06(options),
         BaseOptions o when o.Challenge == 07 => new Challenge07.Challenge07(),
         BaseOptions o when o.Challenge == 08 => new Challenge08.Challenge08(options),
-        BaseOptions o when o.Challenge == 09 => new Challenge09.Challenge09(),
+        BaseOptions o when o.Challenge == 09 => new Challenge09.Challenge09(options),
         BaseOptions o when o.Challenge == 10 => new Challenge10.Challenge10(),
         BaseOptions o when o.Challenge == 11 => new Challenge11.Challenge11(),
         BaseOptions o when o.Challenge == 12 => new Challenge12.Challenge12(),
