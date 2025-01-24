@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Runtime.Serialization.Formatters;
 
 namespace aoc24.Challenges.Challenge11;
 
